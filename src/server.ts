@@ -43,7 +43,7 @@ app.use("/api/locations", locationsRoutes);
 
 // PostgreSQL Database Connection Setup using DATABASE_URL
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,  // PostgreSQL connection string from environment
+  connectionString: process.env.DATABASE_URL,  // Use DATABASE_URL provided by Railway
 });
 
 pool.connect()
