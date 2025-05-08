@@ -11,15 +11,11 @@ import locationsRoutes from "./routes/locations";
 const app = express();
 
 // Dynamically set PORT using process.env.PORT or fallback to 3000
-const PORT = Number(process.env.PORT) || 3000;  // Ensure PORT is always a number
+const PORT = Number(process.env.PORT);  // Ensure PORT is always a number
 
 // CORS setup - Allow local development domains and Railway deployed domain
 const allowedOrigins = [
-  "http://localhost:5173",  // React development server (or other local dev URLs)
-  "http://localhost:8081",
-  "http://localhost:19006", // Expo dev server (if using React Native or Expo)
-  "http://localhost:19000", // Expo dev server (if using React Native or Expo)
-  "exp://192.168.1.108",    // Expo Go scheme (for Expo/React Native)
+  
   "https://railway-backend-production-6769.up.railway.app",  // Your actual Railway URL when deployed
 ];
 
