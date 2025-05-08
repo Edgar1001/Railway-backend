@@ -11,12 +11,11 @@ import locationsRoutes from "./routes/locations";
 const app = express();
 
 // Dynamically set PORT using process.env.PORT or fallback to 3000
-const PORT = Number(process.env.PORT);  // Ensure PORT is always a number
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;  // Ensure PORT is a number
 
 // CORS setup - Allow local development domains and Railway deployed domain
 const allowedOrigins = [
-  
-  "https://railway-backend-production-6769.up.railway.app",  // Your actual Railway URL when deployed
+  "https://backend-v2-production-ad85.up.railway.app",  // Your actual Railway URL when deployed
 ];
 
 const corsOptions: CorsOptions = {
@@ -44,7 +43,7 @@ app.use("/api/locations", locationsRoutes);
 
 // PostgreSQL Database Connection Setup using DATABASE_URL
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,  // PostgreSQL connection string (from environment)
+  connectionString: process.env.DATABASE_URL,  // PostgreSQL connection string from environment
 });
 
 pool.connect()
