@@ -1,6 +1,5 @@
-// src/routes/profile.ts
 import express from "express";
-import { pool } from "../db"; // database connection
+import { pool } from "../db";
 
 const router = express.Router();
 
@@ -26,6 +25,10 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ message: "Missing userId" });
     }
 
+    if (profilePhoto && !/^data:image\/(png|jpeg|jpg);base64,/.test(profilePhoto)) {
+      return res.status(400).json({ message: "Invalid profile photo format" });
+    }
+
     await pool.query(
       `INSERT INTO profiles 
         (user_id, name, gender, birthday, weight, height, fitness_goals, preferred_days, preferred_activity, notifications, location, profile_photo)
@@ -44,7 +47,20 @@ router.post("/", async (req, res) => {
         location = EXCLUDED.location,
         profile_photo = EXCLUDED.profile_photo
       `,
-      [userId, name, gender, birthday, weight, height, fitnessGoals, preferredDays, preferredActivity, notifications, location, profilePhoto]
+      [
+        userId,
+        name,
+        gender,
+        birthday,
+        weight,
+        height,
+        fitnessGoals,
+        preferredDays,
+        preferredActivity,
+        notifications,
+        location,
+        profilePhoto
+      ]
     );
 
     res.status(200).json({ message: "Profile created or updated successfully!" });
@@ -72,7 +88,7 @@ router.get("/:userId", async (req, res) => {
       return res.status(404).json({ message: "Profile not found" });
     }
 
-    res.json({ profile: result.rows[0] }); // ✅ send the whole object, directly
+    res.json({ profile: result.rows[0] });
   } catch (error) {
     console.error("Error fetching profile:", error);
     res.status(500).json({ message: "Error fetching profile" });
@@ -80,3 +96,4 @@ router.get("/:userId", async (req, res) => {
 });
 
 export default router;
+
