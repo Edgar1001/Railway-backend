@@ -3,21 +3,16 @@ dotenv.config();
 
 import { Pool } from "pg";
 
-console.log("Connecting to PostgreSQL with:");
+// Use DATABASE_URL directly instead of individual variables
+console.log("Connecting to PostgreSQL with DATABASE_URL:");
+
 console.log({
-  user: process.env.PGUSER,
-  host: process.env.PGHOST,
-  database: process.env.PGDATABASE,
-  password: process.env.PGPASSWORD ? "******" : "NOT SET", // hide actual password
-  port: process.env.PGPORT,
+  connectionString: process.env.DATABASE_URL ? "******" : "NOT SET",  // Masking the actual connection string for logs
 });
 
+// Create the pool using DATABASE_URL environment variable
 export const pool = new Pool({
-  user: process.env.PGUSER,
-  host: process.env.PGHOST,
-  database: process.env.PGDATABASE,
-  password: process.env.PGPASSWORD,
-  port: Number(process.env.PGPORT),
+  connectionString: process.env.DATABASE_URL,  // PostgreSQL connection string from environment
 });
 
 // Test the connection

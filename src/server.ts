@@ -1,22 +1,21 @@
 import express from "express";
-import cors, { CorsOptions } from "cors"; // ⬅️ import CorsOptions
+import cors, { CorsOptions } from "cors";
 import bodyParser from "body-parser";
+import { Pool } from "pg";
 import authRoutes from "./auth";
 import activitiesRoutes from "./routes/activities"; 
 import profilesRoutes from "./routes/profiles"; 
 import locationsRoutes from "./routes/locations";
 
+// Create Express app
 const app = express();
-const PORT = 3000;
 
-// CORS
+// Dynamically set PORT using process.env.PORT or fallback to 3000
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;  // Ensure PORT is a number
+
+// CORS setup - Allow local development domains and Railway deployed domain
 const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:8081",
-  "http://localhost:19006",
-  "http://localhost:19000",
-  "http://192.168.1.108:19006", // ✅ Add your Expo dev server
-  "exp://192.168.1.108",        // ✅ Add Expo Go scheme
+  "https://backend-v2-production-ad85.up.railway.app",  // Your actual Railway URL when deployed
 ];
 
 const corsOptions: CorsOptions = {
@@ -32,17 +31,26 @@ const corsOptions: CorsOptions = {
   credentials: true,
 };
 
-app.use(cors());
-app.use(bodyParser.json({ limit: '10mb' })); 
+app.use(cors(corsOptions));  // Use the configured CORS options
+app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 
+// Routes for API endpoints
 app.use("/api", authRoutes);             
 app.use("/api/activities", activitiesRoutes);
 app.use("/api/profile", profilesRoutes); 
 app.use("/api/locations", locationsRoutes);
 
+// PostgreSQL Database Connection Setup using DATABASE_URL
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,  // Use DATABASE_URL provided by Railway
+});
 
+pool.connect()
+  .then(() => console.log('Connected to PostgreSQL'))
+  .catch((err) => console.error('PostgreSQL connection error:', err));
+
+// Start the server
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on http://0.0.0.0:${PORT}`);
 });
-
